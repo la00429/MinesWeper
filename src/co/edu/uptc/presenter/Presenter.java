@@ -64,10 +64,9 @@ public class Presenter implements ActionListener, MouseListener, IPresenter {
 			System.exit(0);
 		}
 
-		if (minesweeper.getMines().contains(view.getFrameWeeperPlay().getPlayBoard().buttonClick(e))) {
+		if (minesweeper.gameOver(view.getFrameWeeperPlay().getPlayBoard().buttonClick(e))==false) {
 			gameOver(minesweeper.getMines());
-		}
-		if (!minesweeper.getMines().contains(view.getFrameWeeperPlay().getPlayBoard().buttonClick(e))) {
+		} else {
 			unclogBox(e);
 		}
 
@@ -76,7 +75,7 @@ public class Presenter implements ActionListener, MouseListener, IPresenter {
 	@Override
 	public void loadPlayView(int level) {
 		minesweeper.loadPlayDefault(0, 0, 0);
-		view.loadNewPlay();
+		view.cleanBoard();
 		minesweeper.loadPlayDefault(dataPlay(level).get(0), dataPlay(level).get(1), dataPlay(level).get(2));
 		view.loadDataPlay(dataPlay(level).get(0), dataPlay(level).get(1), this, this);
 	}
@@ -84,18 +83,19 @@ public class Presenter implements ActionListener, MouseListener, IPresenter {
 	@Override
 	public void unclogBox(ActionEvent e) {
 		for (String point : minesweeper.unclogClue(view.getFrameWeeperPlay().getPlayBoard().buttonClick(e))) {
-			view.getFrameWeeperPlay().getPlayBoard().buttonFalse(point);
-			view.getFrameWeeperPlay().getPlayBoard().buttonClue(point, minesweeper.getClue(point));
+			view.unclogButtons(point, minesweeper.getClue(point));
 		}
 	}
 
+	@Override
 	public void gameOver(List<String> mines) {
 		view.showMessage("Game over");
 		for (String point : mines) {
-			view.getFrameWeeperPlay().getPlayBoard().buttonFalseBomb(point, "*");
+			view.gameOver(point);
 		}
 	}
 
+	@Override
 	public List<Integer> dataPlay(int level) {
 		List<Integer> dataPlay = new ArrayList<Integer>();
 		dataPlay.add(minesweeper.getLevels().get(level).getRows());

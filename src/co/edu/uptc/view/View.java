@@ -22,7 +22,7 @@ public class View implements IView {
 	}
 
 	@Override
-	public void loadNewPlay() {
+	public void cleanBoard() {
 		this.getFrameWeeperPlay().getPlayBoard().setVisible(false);
 		this.getFrameWeeperPlay().getPlayBoard().removeAll();
 	}
@@ -35,15 +35,15 @@ public class View implements IView {
 	}
 
 	@Override
-	public void unclogButtons() {
-		// TODO Auto-generated method stub
-		
+	public void unclogButtons(String point, String text) {
+		this.getFrameWeeperPlay().getPlayBoard().buttonFalse(point);
+		this.getFrameWeeperPlay().getPlayBoard().buttonClue(point, text);
+
 	}
 
 	@Override
-	public void gameOver() {
-		// TODO Auto-generated method stub
-		
+	public void gameOver(String point) {
+		this.getFrameWeeperPlay().getPlayBoard().buttonFalseBomb(point, "*");
 	}
 
 }

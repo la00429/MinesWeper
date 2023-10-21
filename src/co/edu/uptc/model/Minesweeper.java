@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Minesweeper implements IMinesweeper {
-	// hay que saber el numero de minas que hay por nivel
 	private Box[][] board;
 	private int rows;
 	private int columns;
@@ -41,8 +40,8 @@ public class Minesweeper implements IMinesweeper {
 			}
 		}
 	}
-
-	public void createMines() {
+	
+	private void createMines() {
 		setMines(new ArrayList<String>());
 		int minesCreate = 0;
 		int rowTemp = 0;
@@ -52,18 +51,16 @@ public class Minesweeper implements IMinesweeper {
 			columnTemp = (int) (Math.random() * this.board[0].length);
 			if (!this.board[rowTemp][columnTemp].isBomb()) {
 				this.board[rowTemp][columnTemp].setBomb(true);
-				this.board[rowTemp][columnTemp].setNumber(5);
 				mines.add(rowTemp + "," + columnTemp);
 				minesCreate++;
 			}
 		}
 	}
-
+	
 	private void updateNumberBoxClue() {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
 				if (board[i][j].isBomb()) {
-
 					List<Box> bombAround = boxAround(i, j);
 					for (Box box : bombAround) {
 						box.setNumber(box.getNumber() + 1);
@@ -119,7 +116,8 @@ public class Minesweeper implements IMinesweeper {
 		}
 		return boxAround;
 	}
-
+	
+	@Override
 	public void loadLevel(List<Object> levelFile) {
 		for (int i = 0; i < levelFile.size(); i++) {
 			if (i % 4 == 0) {
@@ -139,27 +137,6 @@ public class Minesweeper implements IMinesweeper {
 		return namesLevel;
 	}
 
-//	private void selectBox(String point) {
-//		String[] pointCoordinates = point.split(",");
-//		int[] pointSelect = new int[pointCoordinates.length];
-//		for (int i = 0; i < pointCoordinates.length; i++) {
-//			pointSelect[i] = Integer.parseInt(pointCoordinates[i]);
-//		}
-//		if (this.board[pointSelect[0]][pointSelect[1]].isBomb()) {
-//			this.playState = false;
-//			unclogBombs();
-//		} else {
-//			if (this.board[pointSelect[0]][pointSelect[1]].getNumber() != 0) {
-//				this.playState = true;
-//				unclogClue(point);
-//			} else {
-//				this.playState = true;
-//				unclogClue(point);
-//			}
-//		}
-//
-//	}
-
 	private void unclogBombs() {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[0].length; j++) {
@@ -170,6 +147,7 @@ public class Minesweeper implements IMinesweeper {
 		}
 	}
 
+	@Override
 	public List<String> unclogClue(String point) {
 		List<String> uncoveredTiles = new ArrayList<>();
 
@@ -195,6 +173,28 @@ public class Minesweeper implements IMinesweeper {
 			}
 		}
 		return uncoveredTiles;
+	}
+	@Override
+	public boolean gameOver(String point) {
+		String[] pointCoordinates = point.split(",");
+		int[] pointSelect = new int[pointCoordinates.length];
+		for (int i = 0; i < pointCoordinates.length; i++) {
+			pointSelect[i] = Integer.parseInt(pointCoordinates[i]);
+		}
+		if (this.board[pointSelect[0]][pointSelect[1]].isBomb()) {
+			this.playState = false;
+			unclogBombs();
+		} else {
+			if (this.board[pointSelect[0]][pointSelect[1]].getNumber() != 0) {
+				this.playState = true;
+				unclogClue(point);
+			} else {
+				this.playState = true;
+				unclogClue(point);
+			}
+		}
+		return this.playState;
+
 	}
 
 	public String getClue(String point) {
@@ -261,17 +261,6 @@ public class Minesweeper implements IMinesweeper {
 
 	public boolean isPlayState() {
 		return playState;
-	}
-
-	public static void main(String[] args) {
-		Minesweeper p = new Minesweeper();
-		p.loadPlayDefault(9, 9, 10);
-		for (int i = 0; i < p.getBoard().length; i++) {
-			for (int j = 0; j < p.getBoard()[i].length; j++) {
-				System.out.print(p.getBoard()[i][j].getNumber() + " "); // Imprimir el elemento
-			}
-			System.out.println(); // Saltar a la siguiente fila
-		}
 	}
 
 }

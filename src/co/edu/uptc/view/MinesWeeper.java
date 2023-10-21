@@ -37,16 +37,18 @@ public class MinesWeeper extends JPanel {
 			this.setLayout(new GridLayout(rows, columns));
 			for (int i = 0; i < this.rows; i++) {
 				for (int j = 0; j < this.columns; j++) {
-					board[i][j] = new ButtonMinesWeeper();
-					board[i][j].addActionListener(listener);
-					board[i][j].addMouseListener(listenerMouse);
-					board[i][j].setPreferredSize(new Dimension(40, 40));
-					this.add(board[i][j]);
+					addActionsButton(i, j, listener, listenerMouse);
 				}
-
 			}
 		}
+	}
 
+	private void addActionsButton(int row, int column, ActionListener listener, MouseListener listenerMouse) {
+		board[row][column] = new ButtonMinesWeeper();
+		board[row][column].addActionListener(listener);
+		board[row][column].addMouseListener(listenerMouse);
+		board[row][column].setPreferredSize(new Dimension(40, 40));
+		this.add(board[row][column]);
 	}
 
 	public String buttonClick(ActionEvent e) {
@@ -78,9 +80,22 @@ public class MinesWeeper extends JPanel {
 		for (int i = 0; i < pointCoordinates.length; i++) {
 			pointSelect[i] = Integer.parseInt(pointCoordinates[i]);
 		}
-		board[pointSelect[0]][pointSelect[1]].setBackground(Color.RED);
-		board[pointSelect[0]][pointSelect[1]].setText(text);
-		board[pointSelect[0]][pointSelect[1]].setEnabled(false);
+		changeButtonBomb(pointSelect[0], pointSelect[1], text);
+	}
+
+	private void changeButtonBomb(int row, int column, String text) {
+		board[row][column].setBackground(Color.RED);
+		board[row][column].setText(text);
+		board[row][column].setEnabled(false);
+		boardBlock();
+	}
+
+	private void boardBlock() {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				board[i][j].setEnabled(false);
+			}
+		}
 	}
 
 	public void buttonClue(String point, String text) {
@@ -89,9 +104,13 @@ public class MinesWeeper extends JPanel {
 		for (int i = 0; i < pointCoordinates.length; i++) {
 			pointSelect[i] = Integer.parseInt(pointCoordinates[i]);
 		}
-		board[pointSelect[0]][pointSelect[1]].setFont(new Font("Arial", Font.PLAIN, 10));
-		board[pointSelect[0]][pointSelect[1]].setBackground(Color.GRAY);
-		board[pointSelect[0]][pointSelect[1]].setText(text);
+		changeButtonClue(pointSelect[0], pointSelect[1], text);
+	}
+
+	private void changeButtonClue(int row, int column, String text) {
+		board[row][column].setFont(new Font("Arial", Font.PLAIN, 10));
+		board[row][column].setBackground(Color.GRAY);
+		board[row][column].setText(text);
 	}
 
 	public JButton[][] getBoard() {
